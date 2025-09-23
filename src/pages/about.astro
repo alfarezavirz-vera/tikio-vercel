@@ -1,0 +1,126 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Notifications from '../components/Notifications.astro';
+---
+<Layout title="Tentang Kami - TikTok Downloader">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-8 sm:py-12 lg:py-16 xl:py-20 2xl:py-24">
+    <div class="max-w-4xl xl:max-w-4xl 2xl:max-w-4xl mx-auto">
+      <div class="bg-black border border-white rounded-xl sm:rounded-2xl p-6 sm:p-8 mb-6 sm:mb-8">
+        <h2 class="text-2xl sm:text-3xl lg:text-3xl xl:text-3xl 2xl:text-3xl font-bold text-white mb-4 sm:mb-6 text-center">
+          <i class="fas fa-info-circle mr-2 sm:mr-3 lg:mr-3 xl:mr-3"></i>
+          Tentang TikTok Downloader
+        </h2>
+        <div class="prose prose-invert max-w-none">
+          <p class="text-white text-base sm:text-lg lg:text-lg xl:text-lg 2xl:text-lg leading-relaxed mb-4 sm:mb-6">
+            TikTok Downloader adalah platform yang memungkinkan Anda untuk mengunduh video TikTok tanpa watermark dengan mudah dan cepat. 
+            Kami menggunakan teknologi modern untuk memberikan pengalaman terbaik dalam mengunduh konten TikTok favorit Anda.
+          </p>
+          <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <div class="bg-black border border-white rounded-lg sm:rounded-xl p-4 sm:p-6">
+              <h3 class="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">
+                <i class="fas fa-rocket mr-2 text-white"></i>
+                Teknologi Modern
+              </h3>
+              <p class="text-white/80 text-sm sm:text-base">
+                Dibangun dengan Astro untuk frontend yang cepat, Hono untuk backend yang efisien, dan Bun sebagai runtime yang performant.
+              </p>
+            </div>
+            <div class="bg-black border border-white rounded-lg sm:rounded-xl p-4 sm:p-6">
+              <h3 class="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">
+                <i class="fas fa-shield-alt mr-2 text-white"></i>
+                Aman & Privat
+              </h3>
+              <p class="text-white/80 text-sm sm:text-base">
+                Kami tidak menyimpan data pribadi Anda. Semua proses download dilakukan secara real-time tanpa menyimpan file di server kami.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-black border border-white rounded-xl sm:rounded-2xl p-6 sm:p-8 mb-6 sm:mb-8">
+        <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6 text-center">Fitur Unggulan</h3>
+        <div class="grid md:grid-cols-3 gap-4 sm:gap-6">
+          <div class="text-center p-4 sm:p-6 bg-black border border-white rounded-lg sm:rounded-xl">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <i class="fas fa-download text-black text-lg sm:text-xl"></i>
+            </div>
+            <h4 class="text-lg sm:text-xl font-semibold text-white mb-2">Download Cepat</h4>
+            <p class="text-white/80 text-sm sm:text-base">Proses download yang cepat dan efisien tanpa batas waktu tunggu</p>
+          </div>
+          <div class="text-center p-4 sm:p-6 bg-black border border-white rounded-lg sm:rounded-xl">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <i class="fas fa-search text-black text-lg sm:text-xl"></i>
+            </div>
+            <h4 class="text-lg sm:text-xl font-semibold text-white mb-2">Pencarian Mudah</h4>
+            <p class="text-white/80 text-sm sm:text-base">Temukan video TikTok berdasarkan kata kunci yang Anda inginkan</p>
+          </div>
+          <div class="text-center p-4 sm:p-6 bg-black border border-white rounded-lg sm:rounded-xl">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <i class="fas fa-mobile-alt text-black text-lg sm:text-xl"></i>
+            </div>
+            <h4 class="text-lg sm:text-xl font-semibold text-white mb-2">Responsif</h4>
+            <p class="text-white/80 text-sm sm:text-base">Bekerja sempurna di semua perangkat, desktop maupun mobile</p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-black border border-white rounded-xl sm:rounded-2xl p-6 sm:p-8 mb-6 sm:mb-8">
+        <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6 text-center">Teknologi yang Digunakan</h3>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div class="text-center p-3 sm:p-4 bg-black border border-white rounded-lg sm:rounded-xl">
+            <div class="text-3xl sm:text-4xl mb-2 sm:mb-3">🚀</div>
+            <h4 class="text-base sm:text-lg font-semibold text-white mb-1 sm:mb-2">Astro</h4>
+            <p class="text-white/80 text-xs sm:text-sm">Frontend framework yang cepat dan modern</p>
+          </div>
+          <div class="text-center p-3 sm:p-4 bg-black border border-white rounded-lg sm:rounded-xl">
+            <div class="text-3xl sm:text-4xl mb-2 sm:mb-3">⚡</div>
+            <h4 class="text-base sm:text-lg font-semibold text-white mb-1 sm:mb-2">Hono</h4>
+            <p class="text-white/80 text-xs sm:text-sm">Backend framework yang ringan dan efisien</p>
+          </div>
+          <div class="text-center p-3 sm:p-4 bg-black border border-white rounded-lg sm:rounded-xl">
+            <div class="text-3xl sm:text-4xl mb-2 sm:mb-3">🍞</div>
+            <h4 class="text-base sm:text-lg font-semibold text-white mb-1 sm:mb-2">Bun</h4>
+            <p class="text-white/80 text-xs sm:text-sm">Runtime JavaScript yang super cepat</p>
+          </div>
+          <div class="text-center p-3 sm:p-4 bg-black border border-white rounded-lg sm:rounded-xl">
+            <div class="text-3xl sm:text-4xl mb-2 sm:mb-3">🎨</div>
+            <h4 class="text-base sm:text-lg font-semibold text-white mb-1 sm:mb-2">Tailwind CSS</h4>
+            <p class="text-white/80 text-xs sm:text-sm">Utility-first CSS framework</p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-black border border-white rounded-xl sm:rounded-2xl p-6 sm:p-8">
+        <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6 text-center">Cara Menggunakan</h3>
+        <div class="space-y-4 sm:space-y-6">
+          <div class="flex items-start space-x-3 sm:space-x-4">
+            <div class="w-6 h-6 sm:w-8 sm:h-8 bg-white rounded-full flex items-center justify-center text-black font-bold text-xs sm:text-sm flex-shrink-0">1</div>
+            <div>
+              <h4 class="text-lg sm:text-xl font-semibold text-white mb-1 sm:mb-2">Salin URL TikTok</h4>
+              <p class="text-white/80 text-sm sm:text-base">Buka aplikasi TikTok dan salin URL video yang ingin Anda download</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3 sm:space-x-4">
+            <div class="w-6 h-6 sm:w-8 sm:h-8 bg-white rounded-full flex items-center justify-center text-black font-bold text-xs sm:text-sm flex-shrink-0">2</div>
+            <div>
+              <h4 class="text-lg sm:text-xl font-semibold text-white mb-1 sm:mb-2">Paste URL</h4>
+              <p class="text-white/80 text-sm sm:text-base">Paste URL tersebut ke dalam form download di halaman utama atau halaman download</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3 sm:space-x-4">
+            <div class="w-6 h-6 sm:w-8 sm:h-8 bg-white rounded-full flex items-center justify-center text-black font-bold text-xs sm:text-sm flex-shrink-0">3</div>
+            <div>
+              <h4 class="text-lg sm:text-xl font-semibold text-white mb-1 sm:mb-2">Download</h4>
+              <p class="text-white/80 text-sm sm:text-base">Klik tombol download dan pilih format yang diinginkan (dengan atau tanpa watermark)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <Notifications />
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+      }, 1000);
+    });
+  </script>
+</Layout>

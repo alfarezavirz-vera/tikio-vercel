@@ -1,0 +1,70 @@
+---
+import Layout from '../layouts/Layout.astro';
+import VideoForm from '../components/VideoForm.astro';
+import { VPS_CONFIG } from '../utils/config.ts';
+import { isValidTikTokUrl } from '../utils/api.ts';
+let url = new URL(Astro.request.url);
+let videoUrl = url.searchParams.get('url') || '';
+let videoInfo = null;
+let errorMessage = '';
+if (videoUrl && isValidTikTokUrl(videoUrl)) {
+  try {
+    let backendUrl = await VPS_CONFIG.getBackendUrl();
+    let apiUrl = `${backendUrl}/api/download`;
+    let response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36'
+      },
+      body: JSON.stringify({ url: videoUrl }),
+      signal: AbortSignal.timeout(30000)
+    });
+    let result = await response.json();
+    if (result.success && result.data) {
+      return Astro.redirect(`/video/${result.data.id}`);
+    } else {
+      errorMessage = result.error || 'Gagal memproses video';
+    }
+  } catch (error) {
+    errorMessage = 'Terjadi kesalahan saat memproses video';
+  }
+} else if (videoUrl) {
+  errorMessage = 'URL yang dimasukkan bukan URL TikTok yang valid';
+}
+---
+<Layout title="Download Video TikTok - TikTok Downloader">
+  <section class="relative min-h-screen bg-black overflow-hidden">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-8 sm:py-12 lg:py-16 xl:py-20 2xl:py-24 relative z-10">
+      <div class="max-w-4xl xl:max-w-4xl 2xl:max-w-4xl mx-auto">
+        <div class="mb-6 sm:mb-8 lg:mb-12">
+          <a href="/" class="bg-white hover:bg-white/90 text-black px-4 sm:px-6 lg:px-8 xl:px-8 py-2 sm:py-3 lg:py-4 xl:py-4 rounded-lg sm:rounded-xl lg:rounded-2xl transition-all duration-300 inline-flex items-center border border-white">
+            <i class="fas fa-arrow-left mr-2 sm:mr-3 lg:mr-3 xl:mr-3"></i>
+            <span class="text-sm sm:text-base lg:text-lg xl:text-lg font-semibold">Kembali ke Home</span>
+          </a>
+        </div>
+        
+        <div class="text-center mb-8 sm:mb-12 lg:mb-16">
+          <div class="inline-flex items-center gap-3 lg:gap-4 xl:gap-6 bg-white border border-white rounded-full px-4 sm:px-6 lg:px-8 xl:px-10 py-2 sm:py-3 lg:py-4 xl:py-5 mb-4 sm:mb-6 lg:mb-8">
+            <div class="w-2 h-2 lg:w-3 lg:h-3 xl:w-4 xl:h-4 bg-black rounded-full"></div>
+            <span class="text-black text-sm sm:text-base lg:text-lg xl:text-xl 2xl:text-2xl font-medium">Download Video TikTok</span>
+            <div class="w-2 h-2 lg:w-3 lg:h-3 xl:w-4 xl:h-4 bg-black rounded-full"></div>
+          </div>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl 2xl:text-6xl font-black mb-4 sm:mb-6 lg:mb-8 leading-tight">
+            <span class="text-white">Download</span>
+            <br>
+            <span class="text-white">Video TikTok</span>
+          </h1>
+          <p class="text-lg sm:text-xl md:text-2xl lg:text-2xl xl:text-2xl 2xl:text-2xl text-white/70 mb-3 sm:mb-4 lg:mb-6 font-medium">
+            <span class="text-white">Tanpa watermark</span> • 
+            <span class="text-white">Gratis</span> • 
+            <span class="text-white">Cepat</span> • 
+            <span class="text-white">Aman</span>
+          </p>
+        </div>
+        
+        <VideoForm url={videoUrl} />
+      </div>
+    </div>
+  </section>
+</Layout>

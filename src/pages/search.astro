@@ -1,0 +1,513 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { VPS_CONFIG } from '../utils/config.ts';
+import { formatNumber } from '../utils/api.ts';
+import Notifications from '../components/Notifications.astro';
+let url = new URL(Astro.request.url);
+let query = url.searchParams.get('q') || '';
+let videos = [];
+let error = null;
+if (query) {
+  try {
+    let backendUrl = await VPS_CONFIG.getBackendUrl();
+    let apiUrl = `${backendUrl}/api/search`;
+    let response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36'
+      },
+      body: JSON.stringify({ query }),
+      signal: AbortSignal.timeout(30000)
+    });
+    let result = await response.json();
+    if (result.success) {
+      videos = result.data || [];
+    } else {
+      error = result.error || 'Gagal mencari video';
+    }
+  } catch (err) {
+    error = 'Terjadi kesalahan saat mencari video';
+  }
+}
+---
+<Layout title={`Hasil Pencarian: ${query} - TikTok Downloader`}>
+  <section class="relative min-h-screen bg-black overflow-hidden">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-8 sm:py-12 lg:py-16 xl:py-20 2xl:py-24 relative z-10">
+      <div class="max-w-7xl xl:max-w-6xl 2xl:max-w-6xl mx-auto">
+        <div class="relative mb-8 sm:mb-12 lg:mb-16">
+          <div class="relative bg-black border border-white rounded-xl sm:rounded-2xl lg:rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-6 lg:mb-8 gap-4 lg:gap-6">
+              <div class="flex-1">
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl xl:text-5xl 2xl:text-5xl font-black text-white mb-3 lg:mb-4">
+                  <span class="text-white">
+                    Hasil
+                  </span>
+                  <span class="text-white">
+                    Pencarian
+                  </span>
+                </h1>
+                {query && (
+                  <p class="text-white/80 text-base sm:text-lg lg:text-lg xl:text-lg 2xl:text-lg">
+                    Menampilkan hasil untuk: 
+                    <span class="text-white font-bold">"{query}"</span>
+                  </p>
+                )}
+              </div>
+              <a href="/" class="bg-white hover:bg-white/90 text-black px-6 lg:px-8 xl:px-8 py-3 lg:py-4 xl:py-4 rounded-xl lg:rounded-2xl font-bold transition-all duration-300 flex items-center gap-3 border border-white text-base lg:text-lg xl:text-lg">
+                <i class="fas fa-arrow-left text-lg lg:text-xl xl:text-xl"></i>
+                <span>Kembali ke Home</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="relative mb-8 sm:mb-12 lg:mb-16">
+          <div class="relative bg-black border border-white rounded-xl sm:rounded-2xl lg:rounded-3xl p-6 sm:p-8 lg:p-10">
+            <form method="GET" action="/search" class="space-y-4 lg:space-y-6">
+              <div class="flex gap-3 lg:gap-4">
+                <div class="flex-1 relative">
+                  <input 
+                    type="text" 
+                    name="q"
+                    placeholder="Masukkan kata kunci pencarian..." 
+                    required
+                    value={query}
+                    class="w-full px-4 sm:px-6 lg:px-8 xl:px-8 py-3 lg:py-4 xl:py-4 bg-black border border-white rounded-xl lg:rounded-2xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white focus:border-white text-base lg:text-lg xl:text-lg font-medium transition-all duration-300 hover:border-white"
+                  />
+                </div>
+                <button 
+                  type="submit"
+                  class="px-6 lg:px-8 xl:px-8 py-3 lg:py-4 xl:py-4 bg-white hover:bg-white/90 text-black rounded-xl lg:rounded-2xl font-bold text-base lg:text-lg xl:text-lg transition-all duration-300 border border-white flex items-center gap-2 lg:gap-3"
+                >
+                  <i class="fas fa-search text-lg lg:text-xl xl:text-xl"></i>
+                  <span>Cari Video</span>
+                </button>
+              </div>
+              {error && (
+                <div class="bg-black border border-red-500 rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                  <div class="flex items-center gap-3 text-red-400">
+                    <i class="fas fa-exclamation-triangle text-lg lg:text-xl"></i>
+                    <span class="font-medium text-base lg:text-lg">{error}</span>
+                  </div>
+                </div>
+              )}
+            </form>
+          </div>
+        </div>
+        {videos.length > 0 && (
+          <div class="relative mb-8 sm:mb-12 lg:mb-16">
+            <div class="relative bg-black border border-white rounded-xl sm:rounded-2xl lg:rounded-3xl p-6 sm:p-8 lg:p-10">
+              <div class="text-center mb-6 lg:mb-8">
+                <h2 class="text-2xl sm:text-3xl lg:text-3xl xl:text-3xl 2xl:text-3xl font-black text-white mb-2 lg:mb-3">
+                  <span class="text-white">
+                    {videos.length}
+                  </span>
+                  <span class="text-white/90"> Video Ditemukan</span>
+                </h2>
+                <p class="text-white/60 text-sm sm:text-base lg:text-base xl:text-base 2xl:text-base">Hasil pencarian untuk "{query}"</p>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-4 lg:gap-6">
+                {videos.map((video) => (
+                  <div class="group relative cursor-pointer" onclick={`window.location.href='/video/${video.id}'`}>
+                    <div class="relative bg-black border border-white rounded-lg hover:border-white transition-all duration-300 overflow-hidden hover:transform hover:scale-105 hover:shadow-xl">
+                      <div class="relative aspect-[9/16] overflow-hidden">
+                        <img 
+                          src={video.thumbnail} 
+                          alt={video.title || 'Video Thumbnail'}
+                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          loading="lazy"
+                          onload="this.style.opacity='1'"
+                          onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIEVycm9yPC90ZXh0Pjwvc3ZnPg=='"
+                          style="opacity:0; transition: opacity 0.3s ease"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-2 right-2 bg-black border border-white text-white px-2 py-1 rounded text-xs font-medium">
+                          <i class="fas fa-clock mr-1"></i>
+                          {video.duration || 'Unknown'}
+                        </div>
+                        <div class="absolute bottom-2 left-2 flex items-center gap-1">
+                          <img 
+                            src={video.author?.profile_images || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMiIgZmlsbD0iIzMzMzMzMyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5VPC90ZXh0Pjwvc3ZnPg=='} 
+                            alt={video.author?.name || 'Author'}
+                            class="w-5 h-5 rounded-full border border-white"
+                          />
+                        </div>
+                        <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                          <div class="bg-white text-black p-1.5 rounded-full hover:bg-white/90 transition-all duration-300 border border-white">
+                            <i class="fas fa-download text-xs"></i>
+                          </div>
+                        </div>
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <div class="bg-white rounded-full p-2 border border-white">
+                            <i class="fas fa-play text-black text-sm"></i>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p-3">
+                        <h3 class="text-sm font-bold text-white mb-2 line-clamp-2 group-hover:text-white/90 transition-colors duration-300 leading-tight">
+                          {video.title || 'No Title'}
+                        </h3>
+                        <div class="flex items-center justify-between mb-2">
+                          <div class="flex items-center gap-1">
+                            <span class="text-white/80 text-xs font-medium truncate">{video.author?.name || 'Unknown'}</span>
+                          </div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                          <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1 text-white/70">
+                              <i class="fas fa-eye text-xs"></i>
+                              <span>{formatNumber(video.stats?.views || 0)}</span>
+                            </div>
+                            <div class="flex items-center gap-1 text-white/70">
+                              <i class="fas fa-heart text-xs"></i>
+                              <span>{formatNumber(video.stats?.likes || 0)}</span>
+                            </div>
+                          </div>
+                          <div class="text-white/60 text-xs">
+                            <i class="fas fa-comment mr-1"></i>
+                            {formatNumber(video.stats?.comments || 0)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        {videos.length === 0 && query && !error && (
+          <div class="relative mb-8 sm:mb-12 lg:mb-16">
+            <div class="relative bg-black border border-white rounded-xl sm:rounded-2xl lg:rounded-3xl p-8 sm:p-12 lg:p-16 text-center">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 lg:mb-8">
+                <i class="fas fa-search text-xl sm:text-2xl lg:text-3xl text-black"></i>
+              </div>
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 lg:mb-6">
+                <span class="text-white">
+                  Tidak Ada Video Ditemukan
+                </span>
+              </h3>
+              <p class="text-white/80 text-base sm:text-lg lg:text-xl mb-2">Tidak ada video ditemukan untuk</p>
+              <p class="text-white/60 text-base sm:text-lg lg:text-xl mb-6 lg:mb-8">
+                <span class="text-white font-bold">"{query}"</span>
+              </p>
+              <p class="text-white/60 text-sm sm:text-base lg:text-lg">Coba kata kunci yang berbeda atau lebih spesifik</p>
+            </div>
+          </div>
+        )}
+        {!query && (
+          <div class="relative mb-8 sm:mb-12 lg:mb-16">
+            <div class="relative bg-black border border-white rounded-xl sm:rounded-2xl lg:rounded-3xl p-8 sm:p-12 lg:p-16 text-center">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 lg:mb-8">
+                <i class="fas fa-search text-xl sm:text-2xl lg:text-3xl text-black"></i>
+              </div>
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 lg:mb-6">
+                <span class="text-white">
+                  Mulai Pencarian
+                </span>
+              </h3>
+              <p class="text-white/80 text-base sm:text-lg lg:text-xl mb-6 lg:mb-8">Masukkan kata kunci pencarian di form di atas</p>
+              <div class="flex items-center justify-center gap-3">
+                <div class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+                <div class="w-3 h-3 bg-white/80 rounded-full animate-pulse delay-300"></div>
+                <div class="w-3 h-3 bg-white/60 rounded-full animate-pulse delay-600"></div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+  <Notifications />
+  <style>
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes slide-up {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+    @keyframes shimmer {
+      0% {
+        background-position: -200px 0;
+      }
+      100% {
+        background-position: calc(200px + 100%) 0;
+      }
+    }
+    .animate-fade-in {
+      animation: fade-in 1s ease-out;
+    }
+    .animate-slide-up {
+      animation: slide-up 1s ease-out 0.3s both;
+    }
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .aspect-\[9\/16\] {
+      aspect-ratio: 9 / 16;
+    }
+    .group:hover .animate-float {
+      animation-play-state: paused;
+    }
+    .video-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .video-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+      background-size: 200px 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    .skeleton-text {
+      height: 1rem;
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .skeleton-title {
+      height: 1.25rem;
+      border-radius: 0.25rem;
+      margin-bottom: 0.75rem;
+    }
+    .skeleton-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 0.5rem;
+    }
+    .skeleton-avatar {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+    }
+    .loading-card {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .loading-spinner {
+      width: 2rem;
+      height: 2rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .image-loading {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .image-loaded {
+      opacity: 1;
+    }
+    .card-hover-effect {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-hover-effect:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+    }
+    /* Responsive grid spacing */
+    @media (max-width: 640px) {
+      .grid {
+        gap: 1rem;
+        grid-template-columns: repeat(1, 1fr);
+      }
+    }
+    @media (min-width: 641px) and (max-width: 768px) {
+      .grid {
+        gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .grid {
+        gap: 1.5rem;
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (min-width: 1025px) and (max-width: 1280px) {
+      .grid {
+        gap: 1.5rem;
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    @media (min-width: 1281px) {
+      .grid {
+        gap: 2rem;
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    /* Card improvements */
+    .video-card {
+      min-height: 0;
+      break-inside: avoid;
+    }
+    
+    .video-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Prevent card overflow */
+    .group {
+      width: 100%;
+      max-width: 100%;
+    }
+    
+    /* Better text truncation */
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
+    }
+  </style>
+  <script>
+    function showVideoDetails(videoId) {
+      console.log(`Video details: ${videoId}`);
+    }
+    function createSkeletonCard() {
+      return `
+        <div class="group relative">
+          <div class="relative bg-black/80 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
+            <div class="relative aspect-[9/16] overflow-hidden">
+              <div class="skeleton skeleton-image"></div>
+              <div class="absolute bottom-3 right-3 bg-black/90 backdrop-blur-sm text-white px-2 py-1 rounded-lg text-sm font-medium">
+                <div class="skeleton skeleton-text w-12 h-4"></div>
+              </div>
+              <div class="absolute top-3 left-3 bg-red-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-lg text-sm font-bold">
+                TikTok
+              </div>
+              <div class="absolute bottom-3 left-3 flex items-center gap-2">
+                <div class="skeleton skeleton-avatar"></div>
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="skeleton skeleton-title mb-2"></div>
+              <div class="skeleton skeleton-title w-3/4 mb-3"></div>
+              <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-3">
+                  <div class="skeleton skeleton-text w-8 h-4"></div>
+                  <div class="skeleton skeleton-text w-8 h-4"></div>
+                </div>
+                <div class="skeleton skeleton-text w-6 h-4"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    function showLoadingState() {
+      let grid = document.querySelector('.grid');
+      if (grid) {
+        grid.innerHTML = '';
+        for (let i = 0; i < 8; i++) {
+          grid.insertAdjacentHTML('beforeend', createSkeletonCard());
+        }
+      }
+    }
+    function handleImageLoad(img) {
+      img.classList.remove('image-loading');
+      img.classList.add('image-loaded');
+    }
+    function handleImageError(img) {
+      img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIEVycm9yPC90ZXh0Pjwvc3ZnPg==';
+      img.classList.remove('image-loading');
+      img.classList.add('image-loaded');
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      let images = document.querySelectorAll('img[loading="lazy"]');
+      images.forEach(img => {
+        img.classList.add('image-loading');
+        img.addEventListener('load', () => handleImageLoad(img));
+        img.addEventListener('error', () => handleImageError(img));
+      });
+      let videoCards = document.querySelectorAll('.group[onclick]');
+      videoCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          let videoId = card.getAttribute('onclick').match(/\/video\/([^']+)/);
+          if (videoId) {
+            window.location.href = `/video/${videoId[1]}`;
+          }
+        });
+      });
+      let searchForm = document.querySelector('form[action="/search"]');
+      if (searchForm) {
+        searchForm.addEventListener('submit', (e) => {
+          let queryInput = searchForm.querySelector('input[name="q"]');
+          let query = queryInput.value.trim();
+          if (!query) {
+            e.preventDefault();
+            if (typeof showNotification !== 'undefined') {
+              showNotification.error('Masukkan kata kunci pencarian terlebih dahulu!', 3000);
+            }
+            return;
+          }
+          showLoadingState();
+        });
+      }
+      function formatNumber(num) {
+        let numValue = typeof num === 'string' ? parseInt(num.replace(/,/g, '')) : num;
+        if (numValue >= 1000000) return (numValue / 1000000).toFixed(1) + 'M';
+        if (numValue >= 1000) return (numValue / 1000).toFixed(1) + 'K';
+        return numValue.toString();
+      }
+    });
+  </script>
+</Layout>

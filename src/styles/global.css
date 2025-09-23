@@ -1,0 +1,189 @@
+/* Global CSS Optimizations untuk TikIO */
+
+/* CSS Reset dan Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000000;
+  color: #ffffff;
+  overflow-x: hidden;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Font Loading Optimization */
+.font-loading {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.fonts-loaded .font-loading {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Loading States */
+.loading-placeholder {
+  background-color: #1a1a1a;
+  animation: loading-pulse 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+@keyframes loading-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Critical Layout Classes */
+.min-h-screen { min-height: 100vh; }
+.bg-black { background-color: #000000; }
+.text-white { color: #ffffff; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.container { 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  padding: 0 1rem; 
+}
+
+/* Responsive Container */
+@media (min-width: 640px) {
+  .container { padding: 0 1.5rem; }
+}
+
+@media (min-width: 1024px) {
+  .container { padding: 0 2rem; }
+}
+
+@media (min-width: 1280px) {
+  .container { padding: 0 3rem; }
+}
+
+@media (min-width: 1536px) {
+  .container { padding: 0 4rem; }
+}
+
+@media (min-width: 1920px) {
+  .container { padding: 0 5rem; }
+}
+
+@media (min-width: 2560px) {
+  .container { padding: 0 6rem; }
+}
+
+/* Header Styles */
+.sticky { position: sticky; }
+.top-0 { top: 0; }
+.z-50 { z-index: 50; }
+.backdrop-blur-xl { backdrop-filter: blur(24px); }
+.border-b { border-bottom-width: 1px; }
+.border-white\/20 { border-color: rgba(255, 255, 255, 0.2); }
+
+/* Typography */
+.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+.font-black { font-weight: 900; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
+
+/* Solid Text Styles */
+.text-solid-white { color: #ffffff; }
+.text-solid-black { color: #000000; }
+
+/* Spacing */
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mt-4 { margin-top: 1rem; }
+
+/* Responsive Spacing */
+@media (min-width: 640px) {
+  .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .sm\:py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+  .sm\:text-2xl { font-size: 1.5rem; line-height: 2rem; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:px-8 { padding-left: 2rem; padding-right: 2rem; }
+  .lg\:py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+  .lg\:text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+}
+
+/* Animation Optimizations */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s ease-out 0.2s forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* Performance Optimizations */
+.will-change-transform { will-change: transform; }
+.will-change-opacity { will-change: opacity; }
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-up,
+  .loading-placeholder {
+    animation: none;
+  }
+  
+  .animate-fade-in,
+  .animate-slide-up {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Focus styles for accessibility */
+.focus\:outline-none:focus { outline: none; }
+.focus\:ring-2:focus { box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); }
+
+/* Print styles */
+@media print {
+  .no-print { display: none !important; }
+  body { background: white !important; color: black !important; }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .border-white\/20 { border-color: rgba(255, 255, 255, 0.5); }
+  .text-white\/80 { color: rgba(255, 255, 255, 0.9); }
+}
+
+/* Dark mode optimizations (already dark by default) */
+@media (prefers-color-scheme: light) {
+  /* Keep dark theme even in light mode preference */
+  body { background-color: #000000; color: #ffffff; }
+}

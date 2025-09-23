@@ -1,0 +1,18 @@
+User-agent: *
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /bun.lock
+Disallow: /.env
+Disallow: /tsconfig.json
+Disallow: /astro.config.mjs
+Disallow: /tailwind.config.mjs
+Disallow: /ecosystem.config.cjs
+Disallow: /node_modules/
+Disallow: /src/
+Disallow: /backend/
+Disallow: /logs/
+Disallow: /.git/
+Disallow: /.astro/
+Disallow: /dist/
+
+Sitemap: https://tikio.syaii.my.id/sitemap.xml
