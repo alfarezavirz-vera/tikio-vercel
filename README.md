@@ -22,10 +22,8 @@
 - 🎨 **UI Modern** - Desain yang cantik dan responsive dengan tema gelap
 - 🔍 **Fitur Search** - Cari dan temukan video TikTok yang lu mau
 - 📊 **Analytics Video** - Liat likes, komentar, share, dan lain-lain
-- 🎵 **Download Audio** - Download audio original dari video
 - 🖼️ **Kualitas HD** - Download video dengan kualitas tinggi
-- 🌐 **Multi-bahasa** - Interface bahasa Indonesia dengan support bahasa Inggris
-
+  
 ## 🛠️ Tech Stack yang Dipake
 
 ### Frontend
