@@ -10,7 +10,7 @@
     "type-check": "astro check"
   },
   "dependencies": {
-    "@astrojs/node": "^9.4.3",
+    "@astrojs/vercel": "^5.x.x",
     "@astrojs/tailwind": "^6.0.2",
     "astro": "^5.13.9",
     "bun": "^1.2.22",
